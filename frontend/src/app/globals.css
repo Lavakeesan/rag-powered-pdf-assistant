@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0B0A10;
+  --foreground: #F8F9FA;
+  --card: #13111A;
+  --primary: #8B5CF6;
+  --primary-hover: #7C3AED;
+  --accent-pink: #D946EF;
+  --accent-blue: #3B82F6;
+  --accent-cyan: #06B6D4;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent-pink: var(--accent-pink);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-cyan: var(--accent-cyan);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.gradient-text-pink-blue {
+  background: linear-gradient(90deg, var(--accent-pink) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-blue-cyan {
+  background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.glass-card {
+  background: rgba(19, 17, 26, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
+}
