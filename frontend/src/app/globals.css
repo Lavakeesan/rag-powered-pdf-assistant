@@ -4,11 +4,11 @@
   --background: #0B0A10;
   --foreground: #F8F9FA;
   --card: #13111A;
-  --primary: #8B5CF6;
-  --primary-hover: #7C3AED;
-  --accent-pink: #D946EF;
-  --accent-blue: #3B82F6;
-  --accent-cyan: #06B6D4;
+  --primary: #6D28D9;
+  --primary-hover: #5B21B6;
+  --accent-pink: #A21CAF;
+  --accent-blue: #1D4ED8;
+  --accent-cyan: #0E7490;
 }
 
 @theme inline {
@@ -41,17 +41,17 @@ body {
 }
 
 .glass-card {
-  background: rgba(19, 17, 26, 0.7);
+  background: rgba(19, 17, 26, 0.4);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
   transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 20px -10px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 10px 20px -10px rgba(109, 40, 217, 0.3);
 }

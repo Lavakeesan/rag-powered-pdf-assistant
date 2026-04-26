@@ -4,11 +4,9 @@ import { useState } from 'react';
 import { 
   FileUp, 
   File, 
-  X, 
+  Trash2, 
   CheckCircle2, 
-  AlertCircle, 
   Loader2,
-  Trash2,
   ArrowRight,
   ShieldCheck
 } from 'lucide-react';
@@ -26,8 +24,6 @@ export default function UploadPage() {
       progress: 0
     }));
     setFiles(prev => [...prev, ...newFiles]);
-
-    // Simulate upload progress
     newFiles.forEach(file => simulateUpload(file.id));
   };
 
@@ -45,10 +41,6 @@ export default function UploadPage() {
     }, 500);
   };
 
-  const removeFile = (id) => {
-    setFiles(prev => prev.filter(f => f.id !== id));
-  };
-
   return (
     <div className="max-w-4xl mx-auto space-y-8 animate-in slide-in-from-bottom-4 duration-700">
       <div className="text-center space-y-2">
@@ -56,7 +48,6 @@ export default function UploadPage() {
         <p className="text-slate-400">Upload your PDF files and start asking questions instantly.</p>
       </div>
 
-      {/* Drag & Drop Area */}
       <div 
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
@@ -65,14 +56,7 @@ export default function UploadPage() {
           isDragging ? 'border-indigo-500 bg-indigo-500/10' : 'border-white/10 hover:border-white/20'
         }`}
       >
-        <input 
-          type="file" 
-          multiple 
-          accept=".pdf" 
-          onChange={handleFileChange}
-          className="hidden" 
-          id="file-upload"
-        />
+        <input type="file" multiple accept=".pdf" onChange={handleFileChange} className="hidden" id="file-upload" />
         <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center">
           <div className="w-20 h-20 rounded-[28px] bg-indigo-600/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
             <FileUp className="w-10 h-10 text-indigo-400" />
@@ -85,18 +69,6 @@ export default function UploadPage() {
         </label>
       </div>
 
-      {/* Security Banner */}
-      <div className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-          <ShieldCheck className="w-5 h-5 text-emerald-400" />
-        </div>
-        <div className="text-sm">
-          <p className="text-emerald-400 font-bold mb-0.5">Secure Processing</p>
-          <p className="text-slate-500">Your documents are encrypted and only accessible by you. We use enterprise-grade RAG for zero-hallucination analysis.</p>
-        </div>
-      </div>
-
-      {/* Uploaded Files List */}
       {files.length > 0 && (
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-white px-2">Uploaded Files</h2>
@@ -119,10 +91,7 @@ export default function UploadPage() {
                     </div>
                     {file.status === 'uploading' ? (
                       <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-indigo-600 transition-all duration-300 ease-out" 
-                          style={{ width: `${file.progress}%` }}
-                        />
+                        <div className="h-full bg-indigo-600 transition-all duration-300" style={{ width: `${file.progress}%` }} />
                       </div>
                     ) : (
                       <div className="flex items-center gap-2 text-emerald-400 text-xs font-bold">
@@ -132,17 +101,13 @@ export default function UploadPage() {
                     )}
                   </div>
                 </div>
-                
                 <div className="flex items-center gap-2 ml-4">
                   {file.status === 'completed' && (
                     <button className="p-3 rounded-xl bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600 hover:text-white transition-all flex items-center gap-2 text-xs font-bold">
                       Start Chat <ArrowRight className="w-3 h-3" />
                     </button>
                   )}
-                  <button 
-                    onClick={() => removeFile(file.id)}
-                    className="p-3 rounded-xl hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all"
-                  >
+                  <button onClick={() => setFiles(prev => prev.filter(f => f.id !== file.id))} className="p-3 rounded-xl hover:bg-red-500/10 text-slate-500 hover:text-red-400 transition-all">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>

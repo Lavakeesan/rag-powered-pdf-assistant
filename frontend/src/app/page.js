@@ -21,8 +21,8 @@ export default function Home() {
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         {/* Background Gradients */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/20 rounded-full blur-[120px] -z-10" />
-        <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/20 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px] -z-10" />
+        <div className="absolute bottom-[10%] right-[-10%] w-[40%] h-[40%] bg-purple-600/10 rounded-full blur-[120px] -z-10" />
 
         <div className="max-w-7xl mx-auto text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 mb-8">
@@ -66,7 +66,7 @@ export default function Home() {
 
           {/* Chat Mockup */}
           <div className="max-w-4xl mx-auto relative group">
-            <div className="absolute inset-0 bg-indigo-500/20 blur-[100px] -z-10 group-hover:bg-indigo-500/30 transition-colors" />
+            <div className="absolute inset-0 bg-indigo-500/10 blur-[100px] -z-10 group-hover:bg-indigo-500/20 transition-colors" />
             <div className="glass-card rounded-3xl overflow-hidden p-6 text-left border border-white/10 shadow-2xl">
               <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
                 <div className="flex items-center gap-3">
@@ -188,7 +188,7 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-32 px-6">
         <div className="max-w-4xl mx-auto glass-card p-16 rounded-[60px] border border-white/10 text-center relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/20 blur-[80px]" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[80px]" />
           <h2 className="text-4xl md:text-5xl font-bold mb-8">Ready to study smarter?</h2>
           <p className="text-lg text-slate-400 mb-12 max-w-xl mx-auto">
             Join thousands of students and researchers who are using Lumina AI to master complex subjects in half the time.

@@ -6,7 +6,8 @@ import {
   Clock, 
   Zap, 
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 
