@@ -1,7 +1,47 @@
-import Link from 'next/link';
-import { Mail, Lock, User, GraduationCap, Sparkles, ChevronDown, History } from 'lucide-react';
+'use client';
 
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Mail, Lock, User, GraduationCap, Sparkles, ChevronDown, History, Loader2 } from 'lucide-react';
 export default function RegisterPage() {
+  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'Student'
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // Simulated registration flow
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      router.push('/login?message=Registration successful! Please login to continue.');
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative overflow-hidden">
       {/* Background Gradients */}
@@ -10,10 +50,10 @@ export default function RegisterPage() {
 
       <div className="w-full max-w-lg">
         <div className="flex justify-center mb-8">
-            <Link href="/" className="flex items-center gap-2">
-                <Sparkles className="w-8 h-8 text-cyan-400" />
-                <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">Lumina AI</span>
-            </Link>
+          <Link href="/" className="flex items-center gap-2">
+            <Sparkles className="w-8 h-8 text-cyan-400" />
+            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">Lumina AI</span>
+          </Link>
         </div>
 
         <div className="glass-card rounded-[40px] p-8 md:p-12 border border-white/10 shadow-2xl">
@@ -22,15 +62,24 @@ export default function RegisterPage() {
             <p className="text-slate-400 font-medium">Join the frontier of ethereal intelligence.</p>
           </div>
 
-          <form className="space-y-5">
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-300 block ml-1">Full Name</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
                   placeholder="Enter your full name"
-                  className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
                   required
                 />
               </div>
@@ -40,59 +89,81 @@ export default function RegisterPage() {
               <label className="text-sm font-semibold text-slate-300 block ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="name@company.com"
-                  className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
                   required
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-300 block ml-1">Password</label>
-                    <div className="relative">
-                        <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                        <input 
-                        type="password" 
-                        placeholder="••••••••"
-                        className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
-                        required
-                        />
-                    </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300 block ml-1">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
+                    required
+                  />
                 </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-300 block ml-1">Confirm Password</label>
-                    <div className="relative">
-                        <History className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                        <input 
-                        type="password" 
-                        placeholder="••••••••"
-                        className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
-                        required
-                        />
-                    </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-300 block ml-1">Confirm Password</label>
+                <div className="relative">
+                  <History className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
+                    required
+                  />
                 </div>
+              </div>
             </div>
 
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-300 block ml-1">I am a...</label>
               <div className="relative">
                 <GraduationCap className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <select className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-10 py-4 text-sm focus:outline-none focus:border-indigo-500 appearance-none transition-colors">
-                  <option className="bg-slate-950">Student</option>
-                  <option className="bg-slate-950">Admin</option>
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="w-full bg-slate-950/40 border border-white/10 rounded-2xl pl-12 pr-10 py-4 text-sm focus:outline-none focus:border-indigo-500 appearance-none transition-colors text-white"
+                >
+                  <option value="Student" className="bg-slate-950">Student</option>
+                  <option value="Admin" className="bg-slate-950">Admin</option>
                 </select>
                 <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
               </div>
             </div>
 
-            <button 
+            <button
               type="submit"
-              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 py-5 rounded-2xl text-xl font-bold text-white shadow-xl hover:shadow-indigo-500/20 transition-all transform hover:-translate-y-1 mt-4"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 py-5 rounded-2xl text-xl font-bold text-white shadow-xl hover:shadow-indigo-500/20 transition-all transform hover:-translate-y-1 mt-4 flex items-center justify-center gap-2"
             >
-              Register
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  Registering...
+                </>
+              ) : (
+                'Register'
+              )}
             </button>
           </form>
 
@@ -121,22 +192,22 @@ export default function RegisterPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-4 mt-8">
-            {['AI Insights', 'Secure Data', 'Fast Analysis'].map((item) => (
-                <div key={item} className="glass-card py-4 rounded-2xl border border-white/5 text-center">
-                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{item}</p>
-                </div>
-            ))}
+          {['AI Insights', 'Secure Data', 'Fast Analysis'].map((item) => (
+            <div key={item} className="glass-card py-4 rounded-2xl border border-white/5 text-center">
+              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{item}</p>
+            </div>
+          ))}
         </div>
 
         <div className="mt-12 flex flex-col items-center gap-8">
-            <p className="text-[10px] text-slate-700 text-center uppercase tracking-[0.2em] leading-relaxed max-w-xs">
-                © 2024 LUMINA AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
-            </p>
-            <div className="flex gap-8">
-                {['PRIVACY', 'TERMS', 'API', 'SUPPORT'].map((link) => (
-                    <Link key={link} href="#" className="text-[10px] text-slate-700 hover:text-slate-500 transition-colors tracking-widest">{link}</Link>
-                ))}
-            </div>
+          <p className="text-[10px] text-slate-700 text-center uppercase tracking-[0.2em] leading-relaxed max-w-xs">
+            © 2024 LUMINA AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
+          </p>
+          <div className="flex gap-8">
+            {['PRIVACY', 'TERMS', 'API', 'SUPPORT'].map((link) => (
+              <Link key={link} href="#" className="text-[10px] text-slate-700 hover:text-slate-500 transition-colors tracking-widest">{link}</Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

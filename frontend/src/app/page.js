@@ -1,12 +1,12 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { 
-  ArrowRight, 
-  Play, 
-  FileUp, 
-  MessageSquare, 
-  Zap, 
-  ShieldCheck, 
+import {
+  ArrowRight,
+  Play,
+  FileUp,
+  MessageSquare,
+  Zap,
+  ShieldCheck,
   Cpu,
   History,
   Sparkles
@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Navbar />
-      
+
       {/* Hero Section */}
       <section className="pt-32 pb-20 px-6 relative overflow-hidden">
         {/* Background Gradients */}
@@ -29,21 +29,21 @@ export default function Home() {
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
             <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Now Powered by GPT-4o & RAG</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1]">
             AI-Powered PDF<br />
             <span className="gradient-text-pink-blue">Learning</span>{' '}
             <span className="gradient-text-blue-cyan">Assistant</span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-            Upload PDFs, ask questions, and get instant AI explanations using RAG technology. 
+            Upload PDFs, ask questions, and get instant AI explanations using RAG technology.
             Transform dense documents into clear, conversational insights in seconds.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="btn-primary flex items-center gap-2 px-8 py-4 rounded-2xl text-lg font-bold text-white w-full sm:w-auto"
             >
               Get started free <ArrowRight className="w-5 h-5" />
@@ -52,7 +52,7 @@ export default function Home() {
               Try Demo <div className="w-6 h-6 rounded-full bg-cyan-500/20 flex items-center justify-center"><Play className="w-3 h-3 text-cyan-400 fill-cyan-400" /></div>
             </button>
           </div>
-          
+
           <div className="flex flex-col items-center gap-4 mb-20">
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map((i) => (
@@ -79,14 +79,14 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="space-y-6 mb-8">
                 <div className="flex justify-end">
                   <div className="bg-indigo-600/10 border border-indigo-500/20 px-4 py-3 rounded-2xl rounded-tr-none max-w-md">
                     <p className="text-sm text-slate-300 font-medium">Can you explain the statistical requirements?</p>
                   </div>
                 </div>
-                
+
                 <div className="flex gap-4">
                   <div className="w-8 h-8 rounded-lg bg-indigo-600 flex-shrink-0 flex items-center justify-center">
                     <Sparkles className="w-4 h-4 text-white" />
@@ -99,10 +99,10 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="relative">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   placeholder="Ask about this document..."
                   className="w-full bg-slate-950/50 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-indigo-500/50 transition-colors"
                 />
@@ -194,8 +194,8 @@ export default function Home() {
             Join thousands of students and researchers who are using Lumina AI to master complex subjects in half the time.
           </p>
           <div className="flex flex-col items-center gap-6">
-            <Link 
-              href="/register" 
+            <Link
+              href="/register"
               className="btn-primary px-10 py-5 rounded-2xl text-xl font-bold text-white w-full sm:w-auto"
             >
               Create Free Account

@@ -1,14 +1,51 @@
+'use client';
+
+import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Sparkles } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Mail, Lock, Sparkles, Loader2 } from 'lucide-react';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const message = searchParams.get('message');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      // Simulated login flow
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Login successful - redirect to chat interface
+      router.push('/chat');
+    } catch (err) {
+      setError('Invalid email or password. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-background relative overflow-hidden">
       {/* Background Gradients */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] -z-10" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-[120px] -z-10" />
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-md">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600/10 border border-white/5 mb-6 group">
             <Sparkles className="w-8 h-8 text-indigo-500 group-hover:scale-110 transition-transform" />
@@ -18,15 +55,30 @@ export default function LoginPage() {
         </div>
 
         <div className="glass-card rounded-[40px] p-8 md:p-10 border border-white/10 shadow-2xl">
-          <form className="space-y-6">
+          {message && (
+            <div className="mb-6 p-4 bg-cyan-500/10 border border-cyan-500/20 rounded-2xl text-cyan-400 text-sm font-medium text-center">
+              {message}
+            </div>
+          )}
+
+          {error && (
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-medium text-center">
+              {error}
+            </div>
+          )}
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <label className="text-sm font-semibold text-slate-300 block ml-1">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="name@example.com"
-                  className="w-full bg-slate-950/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-950/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
                   required
                 />
               </div>
@@ -39,20 +91,31 @@ export default function LoginPage() {
               </div>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="••••••••"
-                  className="w-full bg-slate-950/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-slate-950/50 border border-white/10 rounded-2xl pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-indigo-500 transition-colors text-white"
                   required
                 />
               </div>
             </div>
 
-            <button 
+            <button
               type="submit"
-              className="w-full btn-primary py-4 rounded-2xl font-bold text-white shadow-lg transition-all"
+              disabled={isLoading}
+              className="w-full btn-primary py-4 rounded-2xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2"
             >
-              Login
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  Logging in...
+                </>
+              ) : (
+                'Login'
+              )}
             </button>
           </form>
 
@@ -79,9 +142,9 @@ export default function LoginPage() {
         <p className="text-center mt-8 text-slate-400">
           Don't have an account? <Link href="/register" className="font-bold text-cyan-400 hover:text-cyan-300 transition-colors">Sign up</Link>
         </p>
-        
+
         <p className="text-center mt-12 text-[10px] text-slate-600 uppercase tracking-widest">
-            © 2024 LUMINA AI • ETHEREAL INTELLIGENCE
+          © 2024 LUMINA AI • ETHEREAL INTELLIGENCE
         </p>
       </div>
     </div>
