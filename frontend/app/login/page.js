@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Mail, Lock, Sparkles, Loader2 } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
@@ -27,13 +27,32 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulated login flow
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await fetch('http://localhost:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const resData = await response.json();
+
+      if (!response.ok) {
+        setError(resData.detail || 'Invalid email or password. Please try again.');
+        return;
+      }
+
+      // Store user and token in cookies
+      document.cookie = `user=${encodeURIComponent(JSON.stringify(resData.user))}; path=/; max-age=86400`;
+      document.cookie = `token=${resData.token}; path=/; max-age=86400`;
       
       // Login successful - redirect to chat interface
       router.push('/chat');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      setError('Could not connect to the server. Please check your network or ensure backend is running.');
     } finally {
       setIsLoading(false);
     }
@@ -148,5 +167,17 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#0B0A10]">
+        <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   );
 }

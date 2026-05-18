@@ -28,8 +28,8 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
   const pathname = usePathname();
   const router = useRouter();
 
-  const handleLogout = () => {
-    // In a real app, you would clear cookies/tokens here
+  const handleLogout = async () => {
+    document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     router.push('/');
   };
 

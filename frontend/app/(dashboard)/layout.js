@@ -26,7 +26,8 @@ export default function DashboardLayout({ children }) {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     router.push('/');
   };
 

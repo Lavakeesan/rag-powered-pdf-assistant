@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, Lock, User, GraduationCap, Sparkles, ChevronDown, History, Loader2 } from 'lucide-react';
+
 export default function RegisterPage() {
   const router = useRouter();
 
@@ -32,11 +33,29 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      // Simulated registration flow
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      router.push('/login?message=Registration successful! Please login to continue.');
+      const response = await fetch('http://localhost:8000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          fullName: formData.fullName,
+          role: formData.role,
+        }),
+      });
+
+      const resData = await response.json();
+
+      if (!response.ok) {
+        setError(resData.detail || 'Registration failed. Please try again.');
+        return;
+      }
+
+      router.push('/login?message=Registration successful! Please login.');
     } catch (err) {
-      setError('Something went wrong. Please try again.');
+      setError('Could not connect to the server. Please check your network or ensure backend is running.');
     } finally {
       setIsLoading(false);
     }
