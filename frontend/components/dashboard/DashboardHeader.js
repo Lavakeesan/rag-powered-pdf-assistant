@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { 
   Menu, 
@@ -8,6 +9,36 @@ import {
 } from 'lucide-react';
 
 export default function DashboardHeader({ onMobileMenuOpen }) {
+  const [user, setUser] = useState({ fullName: 'Loading...', role: 'Student' });
+
+  useEffect(() => {
+    const getCookie = (name) => {
+      if (typeof document === 'undefined') return null;
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+      return null;
+    };
+
+    const userCookie = getCookie('user');
+    if (userCookie) {
+      try {
+        setUser(JSON.parse(userCookie));
+      } catch (e) {
+        console.error('Failed to parse user cookie', e);
+      }
+    }
+  }, []);
+
+  const getInitials = (name) => {
+    if (!name || name === 'Loading...') return 'U';
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
   return (
     <header className="h-16 flex items-center justify-between px-6 bg-[#13111A]/80 backdrop-blur-md border-b border-white/5 flex-shrink-0 sticky top-0 z-20">
       <div className="flex items-center gap-4">
@@ -37,11 +68,15 @@ export default function DashboardHeader({ onMobileMenuOpen }) {
         
         <Link href="/profile" className="flex items-center gap-3 pl-2 group">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-white leading-none mb-1 group-hover:text-indigo-400 transition-colors">Alex Rivera</p>
-            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Student</p>
+            <p className="text-sm font-semibold text-white leading-none mb-1 group-hover:text-indigo-400 transition-colors">
+              {user.fullName}
+            </p>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+              {user.role}
+            </p>
           </div>
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
-            AR
+            {getInitials(user.fullName)}
           </div>
         </Link>
       </div>

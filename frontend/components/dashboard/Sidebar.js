@@ -17,9 +17,8 @@ import {
 
 const menuItems = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'Upload PDF', icon: FileUp, href: '/upload' },
-  { name: 'My Documents', icon: Files, href: '/documents' },
   { name: 'Ask AI', icon: MessageSquare, href: '/chat' },
+  { name: 'My Documents', icon: Files, href: '/documents' },
   { name: 'History', icon: History, href: '/history' },
   { name: 'Settings', icon: Settings, href: '/profile' },
 ];

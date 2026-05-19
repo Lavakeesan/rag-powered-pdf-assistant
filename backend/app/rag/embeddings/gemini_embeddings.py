@@ -1,6 +1,6 @@
 import os
 import logging
-from langchain_google_genai import GoogleGenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from app.core.config import config
 
 logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ def get_embeddings():
         logger.error("Neither GEMINI_API_KEY nor GOOGLE_API_KEY is configured in backend/.env")
         raise ValueError("Google GenAI API Key is missing. Please set GEMINI_API_KEY in backend/.env")
         
-    return GoogleGenAIEmbeddings(
+    return GoogleGenerativeAIEmbeddings(
         model="models/embedding-001",
         google_api_key=api_key
     )
