@@ -56,6 +56,24 @@ export default function ChatPage() {
       const formData = new FormData();
       formData.append('file', rawFile);
 
+      // Parse user profile from cookies to partition uploads in S3
+      try {
+        const userCookie = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('user='));
+        if (userCookie) {
+          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+          if (userData && userData.email) {
+            formData.append('email', userData.email);
+          }
+          if (userData && userData.userId) {
+            formData.append('userId', userData.userId);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to parse user cookie for S3 partitioning:", e);
+      }
+
       setUploadedFiles(prev => prev.map(f => f.id === fileId ? { ...f, progress: 60 } : f));
 
       const uploadRes = await fetch('http://localhost:8000/upload', {
