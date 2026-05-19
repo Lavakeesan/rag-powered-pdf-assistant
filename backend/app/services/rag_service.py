@@ -1,118 +1,45 @@
-import os
 import logging
-import re
-import uuid
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import ChatOpenAI
-from langchain_openai import OpenAIEmbeddings
-from pinecone import Pinecone
-from app.core.config import config
+from app.rag.loaders import pdf_loader
+from app.rag.chunking import text_splitter
+from app.rag.embeddings import gemini_embeddings
+from app.rag.vectorstore import pinecone_store
+from app.rag.retrievers import retriever
+from app.rag.chains import qa_chain
 
 logger = logging.getLogger(__name__)
 
-# Basic validation
-if not config.PINECONE_API_KEY:
-    logger.error("PINECONE_API_KEY not found in environment")
-if not config.OPENAI_API_KEY:
-    logger.error("OPENAI_API_KEY not found in environment")
-
-# Set environment variables for LangChain integrations
-os.environ["OPENAI_API_KEY"] = config.OPENAI_API_KEY or ""
-
-def sanitize_filename(filename):
-    # Remove non-ASCII characters to satisfy Pinecone ID requirements
-    return re.sub(r'[^\x00-\x7F]+', '', filename)
-
 def process_pdf(file_path: str) -> str:
+    """Orchestrates loading, splitting, embedding, and storing a PDF file into Pinecone."""
     try:
-        logger.info(f"Processing PDF: {file_path}")
-        loader = PyPDFLoader(file_path)
-        documents = loader.load()
+        logger.info(f"Processing PDF in modular service: {file_path}")
         
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-        texts = text_splitter.split_documents(documents)
+        # 1. Load PDF
+        documents = pdf_loader.load_pdf(file_path)
         
-        embeddings_model = OpenAIEmbeddings(
-            model="text-embedding-3-small",
-            openai_api_key=config.OPENAI_API_KEY
-        )
+        # 2. Split documents into chunks
+        chunks = text_splitter.split_documents(documents)
         
-        # Initialize Pinecone
-        pc = Pinecone(api_key=config.PINECONE_API_KEY)
-        index = pc.Index(config.PINECONE_INDEX_NAME)
+        # 3. Get Gemini Embeddings model
+        embeddings = gemini_embeddings.get_embeddings()
         
-        logger.info(f"Upserting to Pinecone index: {config.PINECONE_INDEX_NAME} (1536 dims)")
-        
-        base_name = sanitize_filename(os.path.basename(file_path))
-        # Add a unique suffix to the file ID to prevent collisions
-        file_id = f"{base_name}_{uuid.uuid4().hex[:8]}"
-        
-        vectors = []
-        for i, t in enumerate(texts):
-            embedding = embeddings_model.embed_query(t.page_content)
-            vectors.append({
-                "id": f"vec_{i}_{file_id}",
-                "values": embedding,
-                "metadata": {"text": t.page_content}
-            })
-            
-            # Batch upsert every 100 vectors
-            if len(vectors) >= 100:
-                index.upsert(vectors=vectors)
-                vectors = []
-        
-        if vectors:
-            index.upsert(vectors=vectors)
-            
-        return "PDF processed and indexed successfully."
+        # 4. Save to Pinecone
+        result = pinecone_store.index_documents(chunks, embeddings, file_path)
+        return result
     except Exception as e:
         logger.error(f"Error processing PDF: {str(e)}")
         raise e
 
 def get_answer(question: str) -> str:
+    """Orchestrates context retrieval and Gemini prompt generation for user Q&A."""
     try:
-        logger.info(f"Getting answer for: {question}")
+        logger.info(f"Getting answer in modular service: {question}")
         
-        embeddings_model = OpenAIEmbeddings(
-            model="text-embedding-3-small",
-            openai_api_key=config.OPENAI_API_KEY
-        )
+        # 1. Retrieve context
+        context = retriever.retrieve_context(question)
         
-        # 1. Embed query
-        query_vector = embeddings_model.embed_query(question)
-        
-        # 2. Query Pinecone
-        pc = Pinecone(api_key=config.PINECONE_API_KEY)
-        index = pc.Index(config.PINECONE_INDEX_NAME)
-        results = index.query(vector=query_vector, top_k=5, include_metadata=True)
-        
-        # 3. Build context
-        context = "\n".join([res.metadata['text'] for res in results.matches if 'text' in res.metadata])
-        
-        # 4. Generate answer with OpenAI Chat model
-        llm = ChatOpenAI(
-            model="gpt-3.5-turbo"
-        )
-        
-        prompt = f"""You are a helpful assistant. Use the provided context to answer the user's question accurately.
-        If the answer is not in the context, say that you don't have enough information.
-        
-        Context:
-        {context}
-        
-        Question: {question}
-        
-        Answer:"""
-        
-        response = llm.invoke(prompt)
-        
-        # Ensure a plain string is returned
-        if isinstance(response, str):
-            return response
-        if hasattr(response, "content"):
-            return response.content
-        return str(response)
+        # 2. Generate answer using QA chain
+        answer = qa_chain.generate_answer(context, question)
+        return answer
     except Exception as e:
         logger.error(f"Error getting answer: {str(e)}")
         raise e

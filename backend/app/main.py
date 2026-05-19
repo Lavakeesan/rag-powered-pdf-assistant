@@ -1,4 +1,9 @@
+import sys
+import os
 import logging
+# Add parent directory to path so 'app' package can be discovered out of the box
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import auth, pdf, chat
