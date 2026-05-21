@@ -136,3 +136,28 @@ async def delete_document(key: str = None):
     except Exception as e:
         logger.error(f"Failed to delete document '{key}' from S3: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/documents/view")
+async def view_document(key: str = None):
+    if not key:
+        raise HTTPException(status_code=400, detail="Document key is required")
+        
+    if not s3.s3_client or not config.AWS_S3_BUCKET_NAME:
+        raise HTTPException(status_code=500, detail="S3 client not initialized")
+        
+    try:
+        # Generate private pre-signed S3 URL that expires in 1 hour
+        presigned_url = s3.s3_client.generate_presigned_url(
+            'get_object',
+            Params={
+                'Bucket': config.AWS_S3_BUCKET_NAME,
+                'Key': key,
+                'ResponseContentType': 'application/pdf',
+                'ResponseContentDisposition': 'inline'
+            },
+            ExpiresIn=3600
+        )
+        return {"url": presigned_url}
+    except Exception as e:
+        logger.error(f"Failed to generate S3 pre-signed URL for key '{key}': {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
