@@ -1,5 +1,4 @@
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
+"use client";
 import {
   ArrowRight,
   Play,
@@ -12,6 +11,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -124,7 +125,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div id="features" className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Feature Card 1 */}
           <div className="glass-card p-10 rounded-[40px] border border-white/5 flex flex-col items-start text-left group">
             <div className="w-16 h-16 rounded-[24px] bg-purple-600/20 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
@@ -184,6 +185,26 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+{/* About Section */}
+<section id="about" className="py-20 bg-surface">
+  <div className="container mx-auto px-6 lg:px-12 text-center">
+    <h2 className="text-3xl font-bold text-darkText mb-6">About SmartDoc RAG Assistant</h2>
+    <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">Our AI‑powered platform lets you upload PDFs and instantly ask questions. Built with Retrieval‑Augmented Generation (RAG) for accurate, source‑grounded answers.</p>
+    <Link href="/about" className="inline-block btn-primary px-6 py-3 rounded-xl text-white">Learn More</Link>
+  </div>
+</section>
+
+{/* Pricing Section */}
+<section id="pricing" className="py-20 bg-surface">
+  <div className="container mx-auto px-6 lg:px-12 text-center">
+    <h2 className="text-3xl font-bold text-darkText mb-6">Pricing</h2>
+    <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-8">Free tier includes unlimited PDF uploads and chat. Pro tier adds team collaboration and priority support.</p>
+    <Link href="/pricing" className="inline-block btn-primary px-6 py-3 rounded-xl text-white">See Plans</Link>
+  </div>
+</section>
+
+
 
       {/* CTA Section */}
       <section className="py-32 px-6">

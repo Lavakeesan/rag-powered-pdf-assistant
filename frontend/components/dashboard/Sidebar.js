@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 
 const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Ask AI', icon: MessageSquare, href: '/chat' },
   { name: 'My Documents', icon: Files, href: '/documents' },
   { name: 'History', icon: History, href: '/history' },

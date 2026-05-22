@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/dashboard/Sidebar';
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import { Sparkles, X, LayoutDashboard, FileUp, Files, MessageSquare, History, Settings, LogOut } from 'lucide-react';
+import { Sparkles, X, FileUp, Files, MessageSquare, History, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
 const menuItems = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Ask AI', icon: MessageSquare, href: '/chat' },
   { name: 'My Documents', icon: Files, href: '/documents' },
   { name: 'History', icon: History, href: '/history' },

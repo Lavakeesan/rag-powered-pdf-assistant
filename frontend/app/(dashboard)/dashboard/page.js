@@ -1,28 +1,52 @@
 "use client";
-import { FileUp, MessageSquare, Files, ArrowUpRight, Clock, Zap, ChevronRight, TrendingUp, Sparkles } from 'lucide-react';
+import { 
+  FileUp, 
+  MessageSquare, 
+  Files, 
+  ArrowUpRight, 
+  Clock, 
+  Zap, 
+  ChevronRight,
+  TrendingUp,
+  Sparkles
+} from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+
+import { useState, useEffect } from 'react';
 
 export default function DashboardPage() {
-  const [stats, setStats] = useState({ total_pdfs: 0, total_questions: 0, total_responses: 0 });
-  const [recentDocs, setRecentDocs] = useState([]);
+  const [userName, setUserName] = useState('');
+  const [totalPdfs, setTotalPdfs] = useState(0);
 
   useEffect(() => {
-    const storedEmail = localStorage.getItem('user_email') || '';
-    if (storedEmail) {
-      const fetchData = async () => {
+    if (typeof window !== 'undefined') {
+      const userCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('user='));
+      if (userCookie) {
         try {
-          const statsRes = await fetch('/stats');
-          const statsData = await statsRes.json();
-          setStats(statsData);
-          const docsRes = await fetch(`/documents?email=${storedEmail}`);
-          const docsData = await docsRes.json();
-          setRecentDocs(docsData);
+          const userJson = decodeURIComponent(userCookie.split('=')[1]);
+          const user = JSON.parse(userJson);
+          setUserName(user.fullName || user.email?.split('@')[0] || 'User');
+          // Fetch total PDFs for this user
+          const fetchTotal = async () => {
+            try {
+              const resp = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents?email=${encodeURIComponent(user.email)}`);
+              if (resp.ok) {
+                const docs = await resp.json();
+                setTotalPdfs(Array.isArray(docs) ? docs.length : 0);
+              } else {
+                console.error('Failed to fetch documents', resp.status);
+              }
+            } catch (err) {
+              console.error('Error fetching documents', err);
+            }
+          };
+          fetchTotal();
         } catch (e) {
-          console.error('Failed to fetch dashboard data', e);
+          console.error('Failed to parse user cookie', e);
         }
-      };
-      fetchData();
+      }
     }
   }, []);
 
@@ -31,7 +55,7 @@ export default function DashboardPage() {
       {/* Welcome Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome back, Alex 👋</h1>
+          <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Welcome back, {userName || 'User'} 👋</h1>
           <p className="text-slate-400">Here's what's happening with your documents today.</p>
         </div>
         <div className="flex items-center gap-3">
@@ -49,9 +73,9 @@ export default function DashboardPage() {
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          { label: 'Total PDFs Uploaded', value: stats.total_pdfs, icon: Files, color: 'text-blue-400', bg: 'bg-blue-400/10' },
-          { label: 'Questions Asked', value: stats.total_questions, icon: MessageSquare, color: 'text-purple-400', bg: 'bg-purple-400/10' },
-          { label: 'AI Responses Generated', value: stats.total_responses, icon: Zap, color: 'text-amber-400', bg: 'bg-amber-400/10' },
+          { label: 'Total PDFs Uploaded', value: totalPdfs, icon: Files, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+          { label: 'Questions Asked', value: '154', icon: MessageSquare, color: 'text-purple-400', bg: 'bg-purple-400/10' },
+          { label: 'AI Responses Generated', value: '148', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-400/10' },
         ].map((stat, i) => (
           <div key={i} className="glass-card p-6 rounded-3xl border border-white/5 group hover:border-white/10 transition-all">
             <div className="flex items-center justify-between mb-4">
@@ -69,7 +93,6 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Activity */}
         <div className="lg:col-span-2 space-y-4">
@@ -79,6 +102,7 @@ export default function DashboardPage() {
               View all <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
+          
           <div className="glass-card rounded-[32px] border border-white/5 overflow-hidden">
             <div className="divide-y divide-white/5">
               {[
@@ -89,7 +113,9 @@ export default function DashboardPage() {
               ].map((activity, i) => (
                 <div key={i} className="p-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
                   <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${activity.type === 'chat' ? 'bg-purple-600/10 text-purple-400' : 'bg-blue-600/10 text-blue-400'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                      activity.type === 'chat' ? 'bg-purple-600/10 text-purple-400' : 'bg-blue-600/10 text-blue-400'
+                    }`}>
                       {activity.type === 'chat' ? <MessageSquare className="w-5 h-5" /> : <FileUp className="w-5 h-5" />}
                     </div>
                     <div>
@@ -109,7 +135,7 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Tips / Upgrade */}
         <div className="space-y-6">
           <h2 className="text-xl font-bold text-white px-2">Quick Actions</h2>
           <div className="glass-card p-6 rounded-[32px] border border-white/10 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 relative overflow-hidden group">
@@ -124,20 +150,19 @@ export default function DashboardPage() {
             </button>
           </div>
 
-          {/* Recent Documents */}
           <div className="glass-card p-6 rounded-[32px] border border-white/5">
             <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-indigo-400" />
               Recent Documents
             </h3>
             <div className="space-y-3">
-              {recentDocs.map((doc, i) => (
+              {['Chemistry_Ch3.pdf', 'Algebra_101.pdf', 'World_History.pdf'].map((doc, i) => (
                 <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-center">
                       <Files className="w-4 h-4 text-slate-500" />
                     </div>
-                    <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors">{doc.name}</span>
+                    <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors">{doc}</span>
                   </div>
                   <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
                 </div>

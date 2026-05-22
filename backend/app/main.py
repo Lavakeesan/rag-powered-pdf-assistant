@@ -26,8 +26,7 @@ app.add_middleware(
 # Register API Routers
 app.include_router(auth.router)
 app.include_router(pdf.router)
-from app.api import stats
-app.include_router(stats.router)
+app.include_router(chat.router)
 
 @app.get("/")
 async def root():
