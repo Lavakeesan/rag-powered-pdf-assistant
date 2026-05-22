@@ -29,6 +29,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
 
   const handleLogout = async () => {
     document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    localStorage.removeItem('chat_session_id');
     router.push('/');
   };
 
@@ -42,7 +43,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
         <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 shadow-lg shadow-indigo-600/20">
           <Sparkles className="w-5 h-5 text-white" />
         </div>
-        {isOpen && <span className="font-bold text-xl tracking-tight text-white animate-in fade-in duration-300">Lumina AI</span>}
+        {isOpen && <span className="font-bold text-xl tracking-tight text-white animate-in fade-in duration-300">AskMyPDF AI</span>}
       </div>
 
       <nav className="flex-1 px-3 space-y-1 mt-4 overflow-y-auto custom-scrollbar">

@@ -31,7 +31,7 @@ def index_documents(documents, embeddings_model, file_path: str) -> str:
         vectors.append({
             "id": f"vec_{i}_{file_id}",
             "values": embedding,
-            "metadata": {"text": doc.page_content}
+            "metadata": {"text": doc.page_content, "source_file": os.path.basename(file_path)}
         })
         
         if len(vectors) >= 100:
@@ -43,9 +43,18 @@ def index_documents(documents, embeddings_model, file_path: str) -> str:
         
     return "PDF processed and indexed successfully."
 
-def similarity_search(query: str, embeddings_model, k: int = 5):
+def similarity_search(query: str, embeddings_model, k: int = 5, source_file: str = None):
     """Embeds a user query, performs a vector search in Pinecone, and returns matched texts."""
     index = get_index()
     query_vector = embeddings_model.embed_query(query)
-    results = index.query(vector=query_vector, top_k=k, include_metadata=True)
+    
+    filter_dict = {}
+    if source_file:
+        filter_dict["source_file"] = {"$eq": source_file}
+        
+    if filter_dict:
+        results = index.query(vector=query_vector, top_k=k, include_metadata=True, filter=filter_dict)
+    else:
+        results = index.query(vector=query_vector, top_k=k, include_metadata=True)
+        
     return [res.metadata['text'] for res in results.matches if 'text' in res.metadata]

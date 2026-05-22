@@ -7,7 +7,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Lumina AI - AI-Powered PDF Learning Assistant",
+  title: "AskMyPDF AI - AI-Powered PDF Learning Assistant",
   description: "Upload PDFs, ask questions, and get instant AI explanations using RAG technology.",
 };
 

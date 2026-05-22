@@ -1,7 +1,7 @@
 import logging
 from app.rag.loaders import pdf_loader
 from app.rag.chunking import text_splitter
-from app.rag.embeddings import gemini_embeddings
+from app.rag.embeddings import openai_embeddings
 from app.rag.vectorstore import pinecone_store
 from app.rag.retrievers import retriever
 from app.rag.chains import qa_chain
@@ -19,8 +19,8 @@ def process_pdf(file_path: str) -> str:
         # 2. Split documents into chunks
         chunks = text_splitter.split_documents(documents)
         
-        # 3. Get Gemini Embeddings model
-        embeddings = gemini_embeddings.get_embeddings()
+        # 3. Get OpenAI Embeddings model
+        embeddings = openai_embeddings.get_embeddings()
         
         # 4. Save to Pinecone
         result = pinecone_store.index_documents(chunks, embeddings, file_path)
@@ -29,13 +29,13 @@ def process_pdf(file_path: str) -> str:
         logger.error(f"Error processing PDF: {str(e)}")
         raise e
 
-def get_answer(question: str) -> str:
-    """Orchestrates context retrieval and Gemini prompt generation for user Q&A."""
+def get_answer(question: str, filename: str = None) -> str:
+    """Orchestrates context retrieval and prompt generation for user Q&A."""
     try:
-        logger.info(f"Getting answer in modular service: {question}")
+        logger.info(f"Getting answer in modular service: {question} for file: {filename}")
         
         # 1. Retrieve context
-        context = retriever.retrieve_context(question)
+        context = retriever.retrieve_context(question, filename=filename)
         
         # 2. Generate answer using QA chain
         answer = qa_chain.generate_answer(context, question)

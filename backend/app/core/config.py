@@ -12,11 +12,12 @@ class Config:
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_REGION = os.getenv("AWS_REGION", "us-east-1")
-    DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME", "LuminaUsers")
-    AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "lumina-pdf-workspace-bucket")
+    DYNAMODB_TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME", "AskMyPDFUsers")
+    DYNAMODB_CHAT_TABLE_NAME = os.getenv("DYNAMODB_CHAT_TABLE_NAME", "AskMyPDFChatHistory")
+    AWS_S3_BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME", "askmypdf-workspace-bucket")
 
     # JWT Config
-    JWT_SECRET = os.getenv("JWT_SECRET", "lumina-ethereal-secret-key-123456")
+    JWT_SECRET = os.getenv("JWT_SECRET", "askmypdf-ethereal-secret-key-123456")
     JWT_ALGORITHM = "HS256"
 
     # Pinecone Config
@@ -26,8 +27,7 @@ class Config:
     # OpenAI Config
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-    # Gemini Config
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
     GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
     # Google Client ID

@@ -140,7 +140,7 @@ export default function RegisterPage() {
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
             <Sparkles className="w-8 h-8 text-cyan-400" />
-            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">Lumina AI</span>
+            <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-indigo-500 bg-clip-text text-transparent">AskMyPDF AI</span>
           </Link>
         </div>
 
@@ -283,7 +283,7 @@ export default function RegisterPage() {
 
         <div className="mt-12 flex flex-col items-center gap-8">
           <p className="text-[10px] text-slate-700 text-center uppercase tracking-[0.2em] leading-relaxed max-w-xs">
-            © 2024 LUMINA AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
+            © 2024 ASKMYPDF AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
           </p>
           <div className="flex gap-8">
             {['PRIVACY', 'TERMS', 'API', 'SUPPORT'].map((link) => (

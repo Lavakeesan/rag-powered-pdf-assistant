@@ -19,7 +19,8 @@ import {
   ShieldCheck,
   AlertCircle,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Copy
 } from 'lucide-react';
 
 export default function ChatPage() {
@@ -29,6 +30,36 @@ export default function ChatPage() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [selectedFileId, setSelectedFileId] = useState(null);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [activeSessionId, setActiveSessionId] = useState(null);
+
+  useEffect(() => {
+    const storedSession = localStorage.getItem('chat_session_id');
+    if (storedSession) {
+      setActiveSessionId(storedSession);
+      const storedMsgs = localStorage.getItem(`chat_messages_${storedSession}`);
+      if (storedMsgs) {
+        try {
+          setMessages(JSON.parse(storedMsgs));
+        } catch (e) {
+          console.error('Failed to parse stored messages', e);
+        }
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (activeSessionId) {
+      localStorage.setItem(`chat_messages_${activeSessionId}`, JSON.stringify(messages));
+    }
+  }, [messages, activeSessionId]);
+
+  const handleCopy = (content, index) => {
+    navigator.clipboard.writeText(content);
+    setCopiedIndex(index);
+    setTimeout(() => setCopiedIndex(null), 2000);
+  };
 
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -37,6 +68,40 @@ export default function ChatPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isTyping]);
+
+  useEffect(() => {
+    const loadExistingDocs = async () => {
+      try {
+        const userCookie = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('user='));
+        if (userCookie) {
+          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+          if (userData && userData.email) {
+            const res = await fetch(`http://localhost:8000/documents?email=${encodeURIComponent(userData.email)}`);
+            if (res.ok) {
+              const data = await res.json();
+              const formattedDocs = data.map(doc => ({
+                id: doc.id || Math.random().toString(36).substr(2, 9),
+                name: doc.name,
+                size: doc.size,
+                status: 'completed',
+                progress: 100,
+                key: doc.key
+              }));
+              setUploadedFiles(formattedDocs);
+              if (formattedDocs.length > 0) {
+                setSelectedFileId(formattedDocs[0].id);
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load existing documents:", err);
+      }
+    };
+    loadExistingDocs();
+  }, []);
 
   const handleFileUpload = async (rawFile) => {
     if (!rawFile || rawFile.type !== 'application/pdf') return;
@@ -57,6 +122,7 @@ export default function ChatPage() {
       formData.append('file', rawFile);
 
       // Parse user profile from cookies to partition uploads in S3
+      let userEmail = null;
       try {
         const userCookie = document.cookie
           .split('; ')
@@ -64,6 +130,7 @@ export default function ChatPage() {
         if (userCookie) {
           const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
           if (userData && userData.email) {
+            userEmail = userData.email;
             formData.append('email', userData.email);
           }
           if (userData && userData.userId) {
@@ -82,8 +149,29 @@ export default function ChatPage() {
       });
 
       if (!uploadRes.ok) throw new Error('Upload failed');
-
-      setUploadedFiles(prev => prev.map(f => f.id === fileId ? { ...f, progress: 100, status: 'completed' } : f));
+      
+      if (userEmail) {
+        const newDocsRes = await fetch(`http://localhost:8000/documents?email=${encodeURIComponent(userEmail)}`);
+        if (newDocsRes.ok) {
+          const data = await newDocsRes.json();
+          const formattedDocs = data.map(doc => ({
+            id: doc.id || Math.random().toString(36).substr(2, 9),
+            name: doc.name,
+            size: doc.size,
+            status: 'completed',
+            progress: 100,
+            key: doc.key
+          }));
+          setUploadedFiles(formattedDocs);
+          setSelectedFileId(formattedDocs[0]?.id || fileId);
+        } else {
+          setUploadedFiles(prev => prev.map(f => f.id === fileId ? { ...f, status: 'completed', progress: 100 } : f));
+          setSelectedFileId(fileId);
+        }
+      } else {
+        setUploadedFiles(prev => prev.map(f => f.id === fileId ? { ...f, status: 'completed', progress: 100 } : f));
+        setSelectedFileId(fileId);
+      }
 
       // Append success alert in chat
       setMessages(prev => [...prev, {
@@ -130,15 +218,40 @@ export default function ChatPage() {
     setIsTyping(true);
 
     try {
+      let filename = null;
+      if (selectedFileId) {
+        const selectedFile = uploadedFiles.find(f => f.id === selectedFileId);
+        if (selectedFile) filename = selectedFile.name;
+      }
+
+      let userEmail = null;
+      try {
+        const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='));
+        if (userCookie) {
+          const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
+          userEmail = userData?.email || null;
+        }
+      } catch (e) {}
+
       const askRes = await fetch('http://localhost:8000/ask', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: userMessage }),
+        body: JSON.stringify({ 
+          question: userMessage, 
+          filename: filename, 
+          email: userEmail,
+          chat_id: activeSessionId
+        }),
       });
       
       if (!askRes.ok) throw new Error('Could not retrieve AI response.');
       
       const data = await askRes.json();
+      
+      if (data.chat_id && !activeSessionId) {
+        setActiveSessionId(data.chat_id);
+        localStorage.setItem('chat_session_id', data.chat_id);
+      }
       
       setMessages(prev => [...prev, { 
         role: 'assistant', 
@@ -206,14 +319,19 @@ export default function ChatPage() {
                 <File className="w-10 h-10 text-slate-600 mb-3" />
                 <p className="text-xs font-semibold text-slate-400 mb-1">No documents yet</p>
                 <p className="text-[10px] text-slate-600 max-w-[180px] mx-auto leading-relaxed">
-                  Upload PDF articles, notes, or manuals to query them with Lumina AI.
+                  Upload PDF articles, notes, or manuals to query them with AskMyPDF AI.
                 </p>
               </div>
             ) : (
               uploadedFiles.map((file) => (
                 <div 
                   key={file.id} 
-                  className="glass-card p-3 rounded-2xl border border-white/5 flex items-center justify-between gap-3 hover:border-white/10 transition-colors animate-in fade-in duration-300"
+                  onClick={() => setSelectedFileId(file.id)}
+                  className={`cursor-pointer p-3 rounded-2xl border flex items-center justify-between gap-3 transition-colors animate-in fade-in duration-300 ${
+                    selectedFileId === file.id 
+                      ? 'border-cyan-500 bg-cyan-500/10 shadow-[0_0_15px_rgba(6,182,212,0.15)]' 
+                      : 'border-white/5 glass-card hover:border-white/10'
+                  }`}
                 >
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/5 flex items-center justify-center flex-shrink-0 relative overflow-hidden">
@@ -293,7 +411,7 @@ export default function ChatPage() {
                 </div>
                 <h2 className="text-4xl font-bold text-white mb-4 tracking-tight leading-tight">What do you want<br />to know?</h2>
                 <p className="text-slate-400 max-w-sm mx-auto mb-8 leading-relaxed text-sm">
-                  Upload PDF articles, notes, or books in the sidebar and chat with Lumina AI to query them seamlessly.
+                  Upload PDF articles, notes, or books in the sidebar and chat with AskMyPDF AI to query them seamlessly.
                 </p>
                 <div className="flex flex-wrap items-center justify-center gap-3">
                   <button 
@@ -319,11 +437,22 @@ export default function ChatPage() {
                     }`}>
                       {msg.role === 'assistant' ? <Bot className="w-5 h-5" /> : <User className="w-5 h-5" />}
                     </div>
-                    <div className={`max-w-[75%] p-5 rounded-3xl ${
+                    <div className={`max-w-[75%] p-5 rounded-3xl group ${
                       msg.role === 'assistant' ? 'bg-white/5 border border-white/5 rounded-tl-none text-slate-300' : 'bg-indigo-600 text-white rounded-tr-none'
                     }`}>
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                      <p className="text-[9px] font-bold text-slate-500 mt-3 uppercase tracking-widest">{msg.time}</p>
+                      <div className="flex justify-between items-start gap-4">
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                        <button 
+                          onClick={() => handleCopy(msg.content, i)}
+                          className={`p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all flex-shrink-0 ${
+                            msg.role === 'assistant' ? 'hover:bg-white/10 text-slate-400 hover:text-white' : 'hover:bg-indigo-500 text-indigo-200 hover:text-white'
+                          }`}
+                          title="Copy message"
+                        >
+                          {copiedIndex === i ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                      <p className={`text-[9px] font-bold mt-3 uppercase tracking-widest ${msg.role === 'assistant' ? 'text-slate-500' : 'text-indigo-300'}`}>{msg.time}</p>
                     </div>
                   </div>
                 ))}

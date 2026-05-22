@@ -27,6 +27,7 @@ export default function DashboardLayout({ children }) {
 
   const handleLogout = async () => {
     document.cookie = 'user=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    localStorage.removeItem('chat_session_id');
     router.push('/');
   };
 
@@ -65,7 +66,7 @@ export default function DashboardLayout({ children }) {
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="font-bold text-xl text-white">Lumina AI</span>
+            <span className="font-bold text-xl text-white">AskMyPDF AI</span>
           </div>
           <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 hover:bg-white/5 rounded-lg">
             <X className="w-6 h-6 text-slate-400" />

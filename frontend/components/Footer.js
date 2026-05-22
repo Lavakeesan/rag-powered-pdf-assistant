@@ -11,7 +11,7 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold tracking-tight">Lumina AI</span>
+              <span className="text-xl font-bold tracking-tight">AskMyPDF AI</span>
             </Link>
             <p className="text-slate-400 max-w-sm mb-6">
               Transforming how researchers and students interact with complex documents using state-of-the-art AI.
@@ -42,7 +42,7 @@ export default function Footer() {
         
         <div className="border-t border-slate-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-slate-500 text-sm">
-            © 2024 LUMINA AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
+            © 2024 ASKMYPDF AI. ETHEREAL INTELLIGENCE FOR MODERN RESEARCHERS.
           </p>
           <div className="flex gap-8">
             <Link href="#" className="text-slate-500 hover:text-slate-300 text-sm">PRIVACY</Link>

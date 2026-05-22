@@ -92,7 +92,7 @@ export default function Home() {
                     <Sparkles className="w-4 h-4 text-white" />
                   </div>
                   <div className="bg-slate-900/50 border border-white/5 px-4 py-3 rounded-2xl rounded-tl-none max-w-md">
-                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2">LUMINA AI</p>
+                    <p className="text-[10px] uppercase font-bold text-indigo-400 mb-2">ASKMYPDF AI</p>
                     <p className="text-sm text-slate-300 leading-relaxed">
                       According to page 14, the research paper mentions that for the test, characteristics of both naturally-defined names and performative...
                     </p>
@@ -120,7 +120,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Intelligent document<br />understanding</h2>
           <p className="text-slate-400 max-w-2xl mx-auto">
-            Built for speed and accuracy. Lumina AI uses retrieval-augmented generation (RAG) to ensure every answer is grounded in your source material.
+            Built for speed and accuracy. AskMyPDF AI uses retrieval-augmented generation (RAG) to ensure every answer is grounded in your source material.
           </p>
         </div>
 
@@ -154,7 +154,7 @@ export default function Home() {
             </div>
             <h3 className="text-2xl font-bold mb-4">AI Q&A</h3>
             <p className="text-slate-400 mb-8 leading-relaxed">
-              Ask questions in plain English. Lumina understands context, nuances, and technical jargon across all languages.
+              Ask questions in plain English. AskMyPDF AI understands context, nuances, and technical jargon across all languages.
             </p>
           </div>
 
@@ -191,7 +191,7 @@ export default function Home() {
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[80px]" />
           <h2 className="text-4xl md:text-5xl font-bold mb-8">Ready to study smarter?</h2>
           <p className="text-lg text-slate-400 mb-12 max-w-xl mx-auto">
-            Join thousands of students and researchers who are using Lumina AI to master complex subjects in half the time.
+            Join thousands of students and researchers who are using AskMyPDF AI to master complex subjects in half the time.
           </p>
           <div className="flex flex-col items-center gap-6">
             <Link

@@ -27,7 +27,7 @@ async def upload_pdf(
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
         
-        # 1. Process local PDF via RAG (Pinecone & Gemini/OpenAI chunks)
+        # 1. Process local PDF via RAG (Pinecone & OpenAI chunks)
         result = rag_service.process_pdf(file_path)
         
         # 2. Upload file securely to AWS S3 bucket partitioned by user
