@@ -40,8 +40,8 @@ export default function DashboardLayout({ children }) {
         <DashboardHeader onMobileMenuOpen={() => setIsMobileMenuOpen(true)} />
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar p-6 md:p-8">
-          <div className="max-w-7xl mx-auto h-full">
+        <main className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 lg:p-8 max-w-screen-lg mx-auto">
+          <div className="h-full">
             {children}
           </div>
         </main>

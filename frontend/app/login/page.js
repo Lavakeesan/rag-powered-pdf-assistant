@@ -26,7 +26,7 @@ function LoginContent() {
     setIsLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8000/google-login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ function LoginContent() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/login', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -78,7 +78,7 @@ export default function ChatPage() {
         if (userCookie) {
           const userData = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
           if (userData && userData.email) {
-            const res = await fetch(`http://localhost:8000/documents?email=${encodeURIComponent(userData.email)}`);
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents?email=${encodeURIComponent(userData.email)}`);
             if (res.ok) {
               const data = await res.json();
               const formattedDocs = data.map(doc => ({
@@ -143,7 +143,7 @@ export default function ChatPage() {
 
       setUploadedFiles(prev => prev.map(f => f.id === fileId ? { ...f, progress: 60 } : f));
 
-      const uploadRes = await fetch('http://localhost:8000/upload', {
+      const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -151,7 +151,7 @@ export default function ChatPage() {
       if (!uploadRes.ok) throw new Error('Upload failed');
       
       if (userEmail) {
-        const newDocsRes = await fetch(`http://localhost:8000/documents?email=${encodeURIComponent(userEmail)}`);
+        const newDocsRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents?email=${encodeURIComponent(userEmail)}`);
         if (newDocsRes.ok) {
           const data = await newDocsRes.json();
           const formattedDocs = data.map(doc => ({
@@ -233,7 +233,7 @@ export default function ChatPage() {
         }
       } catch (e) {}
 
-      const askRes = await fetch('http://localhost:8000/ask', {
+      const askRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/ask`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

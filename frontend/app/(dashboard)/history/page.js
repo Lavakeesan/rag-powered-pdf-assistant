@@ -30,7 +30,7 @@ export default function HistoryPage() {
     }
 
     try {
-      const res = await fetch(`http://localhost:8000/history?email=${encodeURIComponent(email)}`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/history?email=${encodeURIComponent(email)}`);
       if (res.ok) {
         const data = await res.json();
         setChats(data.chats || []);

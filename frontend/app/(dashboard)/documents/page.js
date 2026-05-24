@@ -54,7 +54,7 @@ export default function DocumentsPage() {
     setError('');
     try {
       const res = await fetch(
-        `http://localhost:8000/documents?email=${encodeURIComponent(email)}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents?email=${encodeURIComponent(email)}`
       );
       if (!res.ok) throw new Error('Failed to load documents');
       const data = await res.json();
@@ -77,7 +77,7 @@ export default function DocumentsPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:8000/documents?key=${encodeURIComponent(key)}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents?key=${encodeURIComponent(key)}`,
         { method: 'DELETE' }
       );
       if (!res.ok) throw new Error('Deletion failed');
@@ -98,7 +98,7 @@ export default function DocumentsPage() {
     newTab.document.write('<p style="font-family:sans-serif;padding:2rem;color:#888">Loading PDF…</p>');
     try {
       const res = await fetch(
-        `http://localhost:8000/documents/view?key=${encodeURIComponent(key)}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/documents/view?key=${encodeURIComponent(key)}`
       );
       if (!res.ok) throw new Error('Failed to obtain view URL');
       const data = await res.json();

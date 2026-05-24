@@ -6,10 +6,10 @@ export default function Hero() {
   return (
     <section className="relative overflow-hidden py-20 bg-gradient-to-r from-primary via-accent to-secondary">
       <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
           Chat with Your PDF Using AI
         </h1>
-        <p className="text-lg md:text-xl text-white/90 max-w-2xl mb-8">
+        <p className="text-base sm:text-lg md:text-xl text-white/90 max-w-2xl mb-8">
           Leverage Retrieval‑Augmented Generation to ask natural language questions directly to your documents. Get accurate, context‑aware answers in seconds.
         </p>
         <div className="flex flex-col sm:flex-row gap-4">

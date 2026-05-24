@@ -27,7 +27,7 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8000/google-login', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/google-login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function RegisterPage() {
 
     setIsLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/register', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
