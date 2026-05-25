@@ -106,22 +106,22 @@ export default function HistoryPage() {
           <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">Chat History</h1>
           <p className="text-slate-400 text-sm">Revisit your previous conversations with AskMyPDF AI.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center gap-3 mt-4 sm:mt-0">
           <button
             onClick={fetchHistory}
-            className="p-2.5 bg-white/5 border border-white/10 text-slate-400 hover:text-white rounded-xl transition-all hover:bg-white/10"
+            className="p-2.5 bg-white/5 border border-white/10 text-slate-400 hover:text-white rounded-xl transition-all hover:bg-white/10 shrink-0"
             title="Refresh history"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search conversations..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 w-64 transition-all"
+              className="pl-10 pr-4 py-2.5 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/40 focus:border-indigo-500/40 w-full sm:w-64 transition-all"
             />
           </div>
         </div>

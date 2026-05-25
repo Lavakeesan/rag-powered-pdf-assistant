@@ -2,7 +2,7 @@
 import { 
   FileUp, 
   MessageSquare, 
-  Files, 
+  FolderOpen, 
   ArrowUpRight, 
   Clock, 
   Zap, 
@@ -63,17 +63,14 @@ export default function DashboardPage() {
             <FileUp className="w-4 h-4" />
             Upload PDF
           </Link>
-          <Link href="/chat" className="flex items-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-xl text-sm font-bold transition-all">
-            <MessageSquare className="w-4 h-4" />
-            Ask Question
-          </Link>
+
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {[
-          { label: 'Total PDFs Uploaded', value: totalPdfs, icon: Files, color: 'text-blue-400', bg: 'bg-blue-400/10' },
+          { label: 'Total PDFs Uploaded', value: totalPdfs, icon: FolderOpen, color: 'text-blue-400', bg: 'bg-blue-400/10' },
           { label: 'Questions Asked', value: '154', icon: MessageSquare, color: 'text-purple-400', bg: 'bg-purple-400/10' },
           { label: 'AI Responses Generated', value: '148', icon: Zap, color: 'text-amber-400', bg: 'bg-amber-400/10' },
         ].map((stat, i) => (
@@ -91,85 +88,6 @@ export default function DashboardPage() {
             <h3 className="text-3xl font-bold text-white tracking-tight">{stat.value}</h3>
           </div>
         ))}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Recent Activity */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="flex items-center justify-between px-2">
-            <h2 className="text-xl font-bold text-white">Recent Activity</h2>
-            <Link href="/history" className="text-sm font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1 transition-colors">
-              View all <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-          
-          <div className="glass-card rounded-[32px] border border-white/5 overflow-hidden">
-            <div className="divide-y divide-white/5">
-              {[
-                { type: 'chat', title: 'Quantum Mechanics Basics', subtitle: 'Asked about Schrödinger equation', time: '2 mins ago' },
-                { type: 'upload', title: 'Macroeconomics_Final.pdf', subtitle: 'Successfully processed', time: '1 hour ago' },
-                { type: 'chat', title: 'History of Renaissance', subtitle: 'Analyzed art influence', time: '3 hours ago' },
-                { type: 'upload', title: 'Biology_Lab_Report.pdf', subtitle: 'Successfully processed', time: 'Yesterday' },
-              ].map((activity, i) => (
-                <div key={i} className="p-5 flex items-center justify-between hover:bg-white/[0.02] transition-colors group">
-                  <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                      activity.type === 'chat' ? 'bg-purple-600/10 text-purple-400' : 'bg-blue-600/10 text-blue-400'
-                    }`}>
-                      {activity.type === 'chat' ? <MessageSquare className="w-5 h-5" /> : <FileUp className="w-5 h-5" />}
-                    </div>
-                    <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-indigo-400 transition-colors">{activity.title}</h4>
-                      <p className="text-xs text-slate-500 mt-1">{activity.subtitle}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest hidden sm:block">{activity.time}</span>
-                    <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-all">
-                      <ArrowUpRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Tips / Upgrade */}
-        <div className="space-y-6">
-          <h2 className="text-xl font-bold text-white px-2">Quick Actions</h2>
-          <div className="glass-card p-6 rounded-[32px] border border-white/10 bg-gradient-to-br from-indigo-600/20 to-purple-600/20 relative overflow-hidden group">
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl group-hover:bg-indigo-500/30 transition-colors" />
-            <Sparkles className="w-10 h-10 text-indigo-400 mb-6" />
-            <h3 className="text-lg font-bold text-white mb-3">Upgrade to Pro</h3>
-            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
-              Get unlimited PDF uploads, faster AI responses, and advanced RAG features.
-            </p>
-            <button className="w-full py-3 bg-white text-slate-950 rounded-2xl text-sm font-bold hover:bg-slate-200 transition-all">
-              Learn More
-            </button>
-          </div>
-
-          <div className="glass-card p-6 rounded-[32px] border border-white/5">
-            <h3 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
-              <Clock className="w-4 h-4 text-indigo-400" />
-              Recent Documents
-            </h3>
-            <div className="space-y-3">
-              {['Chemistry_Ch3.pdf', 'Algebra_101.pdf', 'World_History.pdf'].map((doc, i) => (
-                <div key={i} className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-center">
-                      <Files className="w-4 h-4 text-slate-500" />
-                    </div>
-                    <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors">{doc}</span>
-                  </div>
-                  <ChevronRight className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

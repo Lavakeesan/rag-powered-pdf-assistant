@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 export default function Home() {
   return (
@@ -56,8 +56,18 @@ export default function Home() {
 
           <div className="flex flex-col items-center gap-4 mb-20">
             <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-10 h-10 rounded-full border-2 border-background bg-slate-800" />
+              {[
+                { name: 'A', bg: 'bg-indigo-600' },
+                { name: 'S', bg: 'bg-purple-600' },
+                { name: 'R', bg: 'bg-cyan-600' },
+                { name: 'M', bg: 'bg-pink-600' },
+              ].map((user, i) => (
+                <div
+                  key={i}
+                  className={`w-10 h-10 rounded-full border-2 border-background ${user.bg} flex items-center justify-center text-white text-sm font-bold`}
+                >
+                  {user.name}
+                </div>
               ))}
             </div>
             <p className="text-sm text-slate-400">
@@ -136,15 +146,7 @@ export default function Home() {
               Drag and drop any research paper, legal contract, or textbook. Our AI engine processes even the most complex layouts instantly.
             </p>
             <div className="flex gap-4 w-full">
-              <div className="w-1/2 aspect-square rounded-3xl bg-slate-900 border border-white/5 flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center">
-                  <span className="text-2xl text-slate-700">+</span>
-                </div>
-              </div>
-              <div className="w-1/2 aspect-square rounded-3xl bg-indigo-600 p-6 flex flex-col justify-end">
-                <Zap className="w-8 h-8 text-white mb-2" />
-                <span className="text-xs font-bold text-white/70">Paper_v1.pdf</span>
-              </div>
+              {/* removed feature cards */}
             </div>
           </div>
 
@@ -228,7 +230,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+
     </main>
   );
 }

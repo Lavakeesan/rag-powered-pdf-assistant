@@ -9,9 +9,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#10B981', // Emerald Green
-        secondary: '#1E3A8A', // Deep Blue
-        accent: '#06B6D4', // Cyan/Teal
+        primary: '#059669', // Emerald-600 (darker)
+        secondary: '#1E3A8A', // Deep Blue (unchanged)
+        accent: '#0d9488', // Teal-600 (darker)
         background: '#F9FAFB', // Light gray / white
         foreground: '#111827' // Dark gray text
       },

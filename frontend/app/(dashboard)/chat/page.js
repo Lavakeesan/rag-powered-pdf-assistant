@@ -1,26 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { 
-  Send, 
-  Paperclip, 
-  Sparkles, 
-  User, 
-  Bot, 
-  RotateCcw, 
-  Files,
-  ChevronDown,
-  FileUp,
-  File,
-  Trash2,
-  CheckCircle2,
-  Loader2,
-  ArrowRight,
-  ShieldCheck,
-  AlertCircle,
-  ChevronLeft,
-  ChevronRight,
-  Copy
+import {
+  Send, Paperclip, Sparkles, User, Bot, RotateCcw, FolderOpen, ChevronDown, FileUp, File,
+  Trash2, CheckCircle2, Loader2, ArrowRight, ShieldCheck, AlertCircle, ChevronLeft,
+  ChevronRight, Copy, Mic, X
 } from 'lucide-react';
 
 export default function ChatPage() {
@@ -35,6 +19,10 @@ export default function ChatPage() {
   const [activeSessionId, setActiveSessionId] = useState(null);
 
   useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+      setIsPanelOpen(false);
+    }
+
     const storedSession = localStorage.getItem('chat_session_id');
     if (storedSession) {
       setActiveSessionId(storedSession);
@@ -275,17 +263,25 @@ export default function ChatPage() {
       {/* 1. Collapsible Documents & Upload Panel */}
       <div 
         className={`${
-          isPanelOpen ? 'w-80 border-r border-white/5 opacity-100 pr-4' : 'w-0 opacity-0 overflow-hidden pr-0'
-        } transition-all duration-300 flex flex-col h-full space-y-6 flex-shrink-0 z-10 absolute md:relative bg-[#0B0A10]/95 md:bg-transparent`}
+          isPanelOpen ? 'w-full sm:w-80 border-r border-white/5 opacity-100 px-4 sm:px-0 sm:pr-4' : 'w-0 opacity-0 overflow-hidden px-0'
+        } transition-all duration-300 flex flex-col h-full space-y-6 flex-shrink-0 z-20 absolute inset-y-0 left-0 sm:relative bg-[#0B0A10] sm:bg-transparent pt-4 sm:pt-0`}
       >
         <div className="flex flex-col h-full space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
-              <Files className="w-5 h-5 text-indigo-400" /> Documents
+              <FolderOpen className="w-5 h-5 text-indigo-400" /> Documents
             </h3>
-            <span className="text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400 px-2 py-0.5 rounded-full uppercase tracking-wider">
-              {uploadedFiles.length} files
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                {uploadedFiles.length} files
+              </span>
+              <button 
+                onClick={() => setIsPanelOpen(false)}
+                className="p-1 sm:hidden text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Drag & Drop Upload Zone */}
@@ -381,13 +377,14 @@ export default function ChatPage() {
         <div className="flex items-center justify-between mb-4 flex-shrink-0 px-2">
           <div className="flex items-center gap-3">
             <button 
-              onClick={() => setIsPanelOpen(!isPanelOpen)}
-              className="p-2 bg-white/5 border border-white/10 text-slate-300 hover:text-white rounded-xl transition-all"
-              title={isPanelOpen ? "Close panel" : "Open documents panel"}
+              onClick={() => setIsPanelOpen(true)}
+              className="px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl transition-all flex items-center gap-2 text-sm font-medium shadow-lg shadow-indigo-500/20"
+              title="Open documents panel to select PDF"
             >
-              {isPanelOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <FolderOpen className="w-4 h-4" />
+              <span>Select PDF</span>
             </button>
-            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+            <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2 hidden sm:flex">
               Ask AI Workspace
             </h1>
           </div>
@@ -472,8 +469,8 @@ export default function ChatPage() {
           </div>
 
           {/* Bottom Chat Bar */}
-          <div className="p-6 bg-[#13111A]/80 backdrop-blur-md border-t border-white/5 flex-shrink-0">
-            <form onSubmit={handleSend} className="relative flex items-center gap-3">
+          <div className="p-4 md:p-6 bg-transparent flex-shrink-0 relative z-20">
+            <form onSubmit={handleSend} className="relative flex items-center bg-[#1E1C27] rounded-[32px] p-1.5 md:p-2 border border-white/5 shadow-xl">
               <input 
                 type="file" 
                 accept="application/pdf" 
@@ -484,25 +481,30 @@ export default function ChatPage() {
               <button 
                 type="button" 
                 onClick={() => fileInputRef.current?.click()} 
-                className="p-4 text-slate-500 hover:text-indigo-400 hover:bg-white/5 rounded-2xl transition-all"
+                className="p-3 text-slate-400 hover:text-indigo-400 transition-all flex-shrink-0"
                 title="Quick upload PDF"
               >
                 <Paperclip className="w-5 h-5" />
               </button>
-              <div className="relative flex-1">
-                <input 
-                  type="text" 
-                  value={input} 
-                  onChange={(e) => setInput(e.target.value)} 
-                  placeholder="Type a message or query your PDFs..." 
-                  className="w-full bg-slate-950/50 border border-white/10 rounded-2xl pl-5 pr-14 py-4 text-sm focus:outline-none focus:border-indigo-500/50 transition-all text-white placeholder-slate-500" 
-                />
+              
+              <input 
+                type="text" 
+                value={input} 
+                onChange={(e) => setInput(e.target.value)} 
+                placeholder="Ask anything about the document" 
+                className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-white placeholder-slate-500 py-3 md:py-4 px-2" 
+              />
+              
+              <div className="flex items-center gap-1 flex-shrink-0 pr-1">
+                <button type="button" className="p-2 text-slate-400 hover:text-white transition-colors hidden sm:block">
+                  <Mic className="w-5 h-5" />
+                </button>
                 <button 
                   type="submit" 
                   disabled={!input.trim()} 
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 p-2.5 bg-indigo-600 text-white rounded-xl shadow-lg hover:bg-indigo-500 hover:shadow-indigo-600/30 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-3 md:p-3.5 bg-indigo-500 text-white rounded-full shadow-lg hover:bg-indigo-400 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                 </button>
               </div>
             </form>

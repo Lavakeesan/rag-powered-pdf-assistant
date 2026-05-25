@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Sparkles, Menu, X } from 'lucide-react';
 
 export default function Navbar() {
@@ -10,9 +11,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 bg-background">
       <div className="max-w-7xl mx-auto flex items-center justify-between glass-card px-6 py-3 rounded-2xl">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
-          </div>
+          <Image src="/logo.jpg" alt="AskMyPDF Logo" width={32} height={32} className="rounded-lg object-cover shadow-lg shadow-indigo-500/20" />
           <span className="text-xl font-bold tracking-tight">AskMyPDF AI</span>
         </Link>
         {/* Desktop Links */}
